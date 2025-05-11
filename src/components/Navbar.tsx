@@ -41,7 +41,7 @@ const Navbar = () => {
               </div>
               <div className="flex items-center text-gray-400">
                 <span className="text-sm mr-2">Add guests</span>
-                <Button variant="primary" size="icon" className="rounded-full bg-airbnb-primary text-white h-8 w-8">
+                <Button variant="default" size="icon" className="rounded-full bg-airbnb-primary text-white h-8 w-8">
                   <Search className="h-4 w-4" />
                 </Button>
               </div>
@@ -90,3 +90,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
