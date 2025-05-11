@@ -1,29 +1,25 @@
 
 import React, { useState } from 'react';
-import { MessageCircle, X } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter
+  DialogFooter,
+  DialogDescription
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
-
-interface Message {
-  id: string;
-  content: string;
-  sender: 'user' | 'ai';
-  timestamp: Date;
-}
+import { sendMessageToBot, ChatMessage } from '@/services/chatService';
 
 const AIChatButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<Message[]>([
+  const [isLoading, setIsLoading] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
       content: "Hi there! I'm your HomeHaven AI assistant. I can help you book a stay, answer questions about the property, or provide local recommendations. How can I assist you today?",
@@ -33,13 +29,13 @@ const AIChatButton = () => {
   ]);
   const { toast } = useToast();
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
     
     // Add user message
-    const userMessage: Message = {
+    const userMessage: ChatMessage = {
       id: Date.now().toString(),
       content: input,
       sender: 'user',
@@ -48,37 +44,29 @@ const AIChatButton = () => {
     
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
+    setIsLoading(true);
     
-    // Simulate AI response
-    setTimeout(() => {
-      let responseContent = '';
-      
-      if (input.toLowerCase().includes('book')) {
-        responseContent = "I'd be happy to help you book this property! This would normally connect to the booking backend. When would you like to check in, and how many guests will be staying?";
-      } else if (input.toLowerCase().includes('discount') || input.toLowerCase().includes('cheaper')) {
-        responseContent = "While I don't have the authority to offer discounts, I can suggest booking during weekdays or non-peak seasons when rates are generally lower.";
-      } else if (input.toLowerCase().includes('recommend') || input.toLowerCase().includes('nearby') || input.toLowerCase().includes('restaurant')) {
-        responseContent = "There are several great restaurants within walking distance! In the future, I'll provide personalized recommendations based on the property's location and your preferences.";
-      } else {
-        responseContent = "Thank you for your message. In the fully implemented version, I would connect to the backend to provide accurate information and help with your booking needs.";
-      }
-      
-      const aiMessage: Message = {
-        id: Date.now().toString(),
-        content: responseContent,
-        sender: 'ai',
-        timestamp: new Date()
-      };
-      
-      setMessages((prev) => [...prev, aiMessage]);
-    }, 1000);
+    try {
+      // Send message to the backend service
+      const response = await sendMessageToBot(input);
+      setMessages((prev) => [...prev, response.message]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to get a response from the AI assistant.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleOpen = () => {
     setIsOpen(true);
     toast({
       title: "AI Assistant",
-      description: "This AI assistant will be connected to the backend.",
+      description: "The AI assistant is ready to help with your booking.",
     });
   };
 
@@ -97,6 +85,9 @@ const AIChatButton = () => {
             <DialogTitle className="flex items-center">
               <span className="text-airbnb-primary font-bold mr-2">HomeHaven</span> AI Assistant
             </DialogTitle>
+            <DialogDescription>
+              Get instant help with bookings and property information
+            </DialogDescription>
           </DialogHeader>
           
           <ScrollArea className="h-[350px] pr-4">
@@ -120,6 +111,17 @@ const AIChatButton = () => {
                   </div>
                 </div>
               ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-gray-100 rounded-lg px-4 py-2 max-w-[80%]">
+                    <div className="flex space-x-2">
+                      <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                      <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                      <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </ScrollArea>
           
@@ -130,8 +132,9 @@ const AIChatButton = () => {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type a message..."
                 className="flex-1"
+                disabled={isLoading}
               />
-              <Button type="submit">Send</Button>
+              <Button type="submit" disabled={isLoading}>Send</Button>
             </form>
           </DialogFooter>
         </DialogContent>
