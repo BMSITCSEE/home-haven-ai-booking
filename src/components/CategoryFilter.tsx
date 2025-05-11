@@ -2,13 +2,13 @@
 import React from 'react';
 import { ScrollArea, ScrollBar } from './ui/scroll-area';
 
-interface Category {
+export interface Category {
   id: string;
   name: string;
   icon: string; // URL to icon image
 }
 
-interface CategoryFilterProps {
+export interface CategoryFilterProps {
   categories: Category[];
   activeCategory: string;
   onCategoryChange: (categoryId: string) => void;

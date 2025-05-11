@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import CategoryFilter from '@/components/CategoryFilter';
@@ -60,7 +60,24 @@ const listings = [
   // ... add more listings if needed
 ];
 
+// Sample categories data
+const categories = [
+  { id: 'all', name: 'All', icon: '/placeholder.svg' },
+  { id: 'beach', name: 'Beach', icon: '/placeholder.svg' },
+  { id: 'mountain', name: 'Mountain', icon: '/placeholder.svg' },
+  { id: 'city', name: 'City', icon: '/placeholder.svg' },
+  { id: 'countryside', name: 'Countryside', icon: '/placeholder.svg' },
+  { id: 'lake', name: 'Lake', icon: '/placeholder.svg' },
+];
+
 const ListingsPage = () => {
+  const [activeCategory, setActiveCategory] = useState('all');
+  
+  const handleCategoryChange = (categoryId: string) => {
+    setActiveCategory(categoryId);
+    // In a real app, this would filter listings based on the category
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -73,7 +90,11 @@ const ListingsPage = () => {
         
         <h1 className="text-3xl font-bold mb-6">Explore homes</h1>
         
-        <CategoryFilter />
+        <CategoryFilter 
+          categories={categories}
+          activeCategory={activeCategory}
+          onCategoryChange={handleCategoryChange}
+        />
         
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
           {listings.map((listing) => (
@@ -84,7 +105,7 @@ const ListingsPage = () => {
               location={listing.location}
               price={listing.price}
               rating={listing.rating}
-              image={listing.images[0]}
+              imageUrl={listing.images[0]}
             />
           ))}
         </div>
