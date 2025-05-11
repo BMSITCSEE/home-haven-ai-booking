@@ -26,7 +26,7 @@ const AIChatButton = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Hi there! I'm your HomeHaven AI assistant. I can help you book a stay, answer questions about the property, or provide local recommendations. How can I assist you today?',
+      content: "Hi there! I'm your HomeHaven AI assistant. I can help you book a stay, answer questions about the property, or provide local recommendations. How can I assist you today?",
       sender: 'ai',
       timestamp: new Date()
     }
