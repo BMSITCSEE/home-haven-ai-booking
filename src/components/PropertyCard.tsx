@@ -43,6 +43,11 @@ const PropertyCard = ({
     });
   };
 
+  // Fallback to placeholder if image fails to load
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = "https://source.unsplash.com/random/300×200/?hotel";
+  };
+
   return (
     <Link to={`/properties/${id}`}>
       <Card className="overflow-hidden border-none listing-card-hover">
@@ -50,9 +55,10 @@ const PropertyCard = ({
           <div className="relative">
             <AspectRatio ratio={1} className="bg-muted">
               <img 
-                src={imageUrl} 
+                src={imageUrl || "https://source.unsplash.com/random/300×200/?hotel"} 
                 alt={title} 
                 className="object-cover h-full w-full rounded-xl"
+                onError={handleImageError}
               />
             </AspectRatio>
             <button
