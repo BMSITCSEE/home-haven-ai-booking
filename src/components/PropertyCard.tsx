@@ -20,6 +20,15 @@ interface PropertyCardProps {
   dates?: string;
 }
 
+// Array of reliable fallback images
+const FALLBACK_IMAGES = [
+  "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=60",
+  "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=500&q=60",
+  "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=500&q=60",
+  "https://images.unsplash.com/photo-1562790351-d273a961e0e9?auto=format&fit=crop&w=500&q=60",
+  "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8?auto=format&fit=crop&w=500&q=60"
+];
+
 const PropertyCard = ({ 
   id, 
   title, 
@@ -43,20 +52,20 @@ const PropertyCard = ({
     });
   };
 
-  // Use reliable fallback images from Unsplash
-  const fallbackImageUrl = "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8aG90ZWx8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60";
+  // Get a random fallback image to ensure variety
+  const getRandomFallbackImage = () => {
+    const index = Math.floor(Math.random() * FALLBACK_IMAGES.length);
+    return FALLBACK_IMAGES[index];
+  };
   
   // Determine the image source to use
   const getImageSource = () => {
-    if (imgError) {
-      return fallbackImageUrl;
+    if (imgError || !imageUrl) {
+      return getRandomFallbackImage();
     }
     
-    if (!imageUrl) {
-      return fallbackImageUrl;
-    }
-    
-    return imageUrl.startsWith('http') ? imageUrl : `https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60`;
+    // Always ensure we have an absolute URL for GitHub Pages
+    return imageUrl.startsWith('http') ? imageUrl : getRandomFallbackImage();
   };
 
   // Handle image loading errors
@@ -65,8 +74,7 @@ const PropertyCard = ({
     setImgError(true);
   };
 
-  console.log("PropertyCard rendering with imageUrl:", imageUrl);
-  console.log("Using image source:", getImageSource());
+  console.log(`PropertyCard ${id} rendering with image: ${getImageSource()}`);
 
   return (
     <Link to={`/properties/${id}`}>
@@ -79,6 +87,7 @@ const PropertyCard = ({
                 alt={title} 
                 className="object-cover h-full w-full rounded-xl"
                 onError={handleImageError}
+                loading="lazy"
               />
             </AspectRatio>
             <button
