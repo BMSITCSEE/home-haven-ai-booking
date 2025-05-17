@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import { 
   Card, 
-  CardContent, 
-  CardFooter
+  CardContent
 } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { useToast } from '@/hooks/use-toast';
@@ -43,10 +42,23 @@ const PropertyCard = ({
     });
   };
 
+  // Use a local fallback image if the provided URL fails
+  const fallbackImageUrl = "https://source.unsplash.com/random/300×200/?hotel";
+  
+  // Ensure we're using an absolute URL for the image
+  const imageSource = imageUrl && (imageUrl.startsWith('http') ? 
+    imageUrl : 
+    `https://a0.muscache.com${imageUrl}`
+  );
+
   // Fallback to placeholder if image fails to load
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = "https://source.unsplash.com/random/300×200/?hotel";
+    console.log("Image load error, using fallback");
+    e.currentTarget.src = fallbackImageUrl;
   };
+
+  console.log("PropertyCard rendering with imageUrl:", imageUrl);
+  console.log("Using image source:", imageSource);
 
   return (
     <Link to={`/properties/${id}`}>
@@ -55,7 +67,7 @@ const PropertyCard = ({
           <div className="relative">
             <AspectRatio ratio={1} className="bg-muted">
               <img 
-                src={imageUrl || "https://source.unsplash.com/random/300×200/?hotel"} 
+                src={imageSource || fallbackImageUrl} 
                 alt={title} 
                 className="object-cover h-full w-full rounded-xl"
                 onError={handleImageError}

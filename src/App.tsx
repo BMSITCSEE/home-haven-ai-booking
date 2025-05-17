@@ -14,35 +14,43 @@ const queryClient = new QueryClient();
 // Check if running on GitHub Pages
 const isGitHubPages = window.location.hostname.includes('github.io');
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      {/* Use HashRouter for GitHub Pages and BrowserRouter for other environments */}
-      {isGitHubPages ? (
-        <HashRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/properties/:id" element={<PropertyDetailsPage />} />
-            <Route path="/listings" element={<ListingsPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </HashRouter>
-      ) : (
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/properties/:id" element={<PropertyDetailsPage />} />
-            <Route path="/listings" element={<ListingsPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      )}
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+console.log("Is GitHub Pages:", isGitHubPages);
+console.log("Hostname:", window.location.hostname);
+console.log("Pathname:", window.location.pathname);
+
+const App = () => {
+  console.log("App component rendering");
+  
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        {/* Use HashRouter for GitHub Pages and BrowserRouter for other environments */}
+        {isGitHubPages ? (
+          <HashRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/properties/:id" element={<PropertyDetailsPage />} />
+              <Route path="/listings" element={<ListingsPage />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </HashRouter>
+        ) : (
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/properties/:id" element={<PropertyDetailsPage />} />
+              <Route path="/listings" element={<ListingsPage />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        )}
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
