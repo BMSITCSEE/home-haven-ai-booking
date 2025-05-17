@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import { 
@@ -31,6 +31,7 @@ const PropertyCard = ({
   dates = 'May 15-20'
 }: PropertyCardProps) => {
   const { toast } = useToast();
+  const [imgError, setImgError] = useState(false);
   
   const handleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -42,23 +43,30 @@ const PropertyCard = ({
     });
   };
 
-  // Use a local fallback image if the provided URL fails
-  const fallbackImageUrl = "https://source.unsplash.com/random/300×200/?hotel";
+  // Use reliable fallback images from Unsplash
+  const fallbackImageUrl = "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8aG90ZWx8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60";
   
-  // Ensure we're using an absolute URL for the image
-  const imageSource = imageUrl && (imageUrl.startsWith('http') ? 
-    imageUrl : 
-    `https://a0.muscache.com${imageUrl}`
-  );
+  // Determine the image source to use
+  const getImageSource = () => {
+    if (imgError) {
+      return fallbackImageUrl;
+    }
+    
+    if (!imageUrl) {
+      return fallbackImageUrl;
+    }
+    
+    return imageUrl.startsWith('http') ? imageUrl : `https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60`;
+  };
 
-  // Fallback to placeholder if image fails to load
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+  // Handle image loading errors
+  const handleImageError = () => {
     console.log("Image load error, using fallback");
-    e.currentTarget.src = fallbackImageUrl;
+    setImgError(true);
   };
 
   console.log("PropertyCard rendering with imageUrl:", imageUrl);
-  console.log("Using image source:", imageSource);
+  console.log("Using image source:", getImageSource());
 
   return (
     <Link to={`/properties/${id}`}>
@@ -67,7 +75,7 @@ const PropertyCard = ({
           <div className="relative">
             <AspectRatio ratio={1} className="bg-muted">
               <img 
-                src={imageSource || fallbackImageUrl} 
+                src={getImageSource()} 
                 alt={title} 
                 className="object-cover h-full w-full rounded-xl"
                 onError={handleImageError}

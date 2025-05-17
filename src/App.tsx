@@ -17,7 +17,9 @@ const isGitHubPages = window.location.hostname.includes('github.io');
 console.log("Is GitHub Pages:", isGitHubPages);
 console.log("Hostname:", window.location.hostname);
 console.log("Pathname:", window.location.pathname);
+console.log("Full URL:", window.location.href);
 
+// Always use HashRouter for GitHub Pages deployments
 const App = () => {
   console.log("App component rendering");
   
@@ -26,28 +28,14 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        {/* Use HashRouter for GitHub Pages and BrowserRouter for other environments */}
-        {isGitHubPages ? (
-          <HashRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/properties/:id" element={<PropertyDetailsPage />} />
-              <Route path="/listings" element={<ListingsPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </HashRouter>
-        ) : (
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/properties/:id" element={<PropertyDetailsPage />} />
-              <Route path="/listings" element={<ListingsPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        )}
+        <HashRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/properties/:id" element={<PropertyDetailsPage />} />
+            <Route path="/listings" element={<ListingsPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </HashRouter>
       </TooltipProvider>
     </QueryClientProvider>
   );
