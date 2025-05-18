@@ -28,6 +28,13 @@ document.addEventListener('error', function(e) {
   }
 }, true);
 
+// GitHub Pages verification
+window.addEventListener('load', function() {
+  console.log("Window loaded successfully");
+  console.log("Document readyState:", document.readyState);
+  console.log("All scripts loaded:", Array.from(document.scripts).map(s => s.src));
+});
+
 const rootElement = document.getElementById("root");
 
 if (rootElement) {

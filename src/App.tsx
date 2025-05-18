@@ -32,6 +32,7 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        {/* HashRouter is essential for GitHub Pages */}
         <HashRouter>
           <Routes>
             <Route path="/" element={<Index />} />
