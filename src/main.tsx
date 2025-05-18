@@ -21,7 +21,10 @@ console.log("Public URL:", import.meta.env.BASE_URL || '/');
 document.addEventListener('error', function(e) {
   const target = e.target as HTMLElement;
   if (target.tagName === 'SCRIPT' || target.tagName === 'LINK') {
-    console.error(`Failed to load resource: ${(target as HTMLScriptElement | HTMLLinkElement).src || (target as HTMLLinkElement).href}`);
+    const resourceUrl = target.tagName === 'SCRIPT' 
+      ? (target as HTMLScriptElement).src 
+      : (target as HTMLLinkElement).href;
+    console.error(`Failed to load resource: ${resourceUrl}`);
   }
 }, true);
 
