@@ -9,10 +9,23 @@ import PropertyDetailsPage from "./pages/PropertyDetailsPage";
 import ListingsPage from "./pages/ListingsPage";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+// Create query client for API requests
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false
+    }
+  }
+});
 
 const App = () => {
-  console.log("App component rendering with HashRouter - GitHub Pages fix");
+  // Log GitHub Pages deployment information
+  const isGitHubPages = window.location.hostname.includes('github.io');
+  console.log("App component rendering with HashRouter - GitHub Pages deployment");
+  console.log("Is GitHub Pages:", isGitHubPages);
+  console.log("Full path:", window.location.pathname);
+  console.log("Hash fragment:", window.location.hash);
   
   return (
     <QueryClientProvider client={queryClient}>
