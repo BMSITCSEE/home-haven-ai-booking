@@ -22,7 +22,7 @@ const queryClient = new QueryClient({
 const App = () => {
   // Log GitHub Pages deployment information
   const isGitHubPages = window.location.hostname.includes('github.io');
-  console.log("App component rendering with HashRouter - GitHub Pages deployment");
+  console.log("App component rendering with HashRouter");
   console.log("Is GitHub Pages:", isGitHubPages);
   console.log("Full path:", window.location.pathname);
   console.log("Hash fragment:", window.location.hash);
@@ -32,7 +32,7 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        {/* HashRouter is essential for GitHub Pages */}
+        {/* HashRouter is essential for GitHub Pages - it correctly handles subpaths */}
         <HashRouter>
           <Routes>
             <Route path="/" element={<Index />} />
